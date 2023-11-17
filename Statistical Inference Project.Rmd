@@ -1,0 +1,85 @@
+---
+title: "Statistical Inference Course Project"
+author: "Abhijeet"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Loading Library
+```{r}
+library("ggplot2")
+```
+### Parameters
+```{r}
+set.seed(1234)
+#Sample size
+n<-40
+simulations<-1000
+lambda<-0.2
+
+```
+
+### 1. Simulation
+```{r}
+
+mns<-NULL
+for (i in 1 : simulations){ mns <- c(mns, mean(rexp(n,lambda)))} 
+
+```
+
+### Comparing the sample mean with theoretical mean of the distribution.
+```{r}
+#Theoretical Mean
+m1<-1/lambda
+print(paste("Theoretical Mean: ",round(m1,2)))
+#Sample Sample Mean
+m2<-mean(mns[])
+print(paste("Sample Mean: ",round(m2,2)))
+
+```
+
+```{r}
+hist(mns,xlab = "Sample Mean", main="Distribution of Sample mean and Comparison",col="red")
+abline(v=m1,col="green",lwd=3)
+abline(v=m2,col="blue",lwd=3)
+legend("topright", legend = c("Theoretical Mean", "Sample Mean"), col = c("green", "blue"), lwd = 3)
+```
+The calculated sample mean is 4.97, while the theoretical mean is 5. This indicates that the center of distribution of averages from 40 exponential sample closely aligns with the expected theoretical center.
+
+### Standard Deviation
+```{r}
+# Sample
+Sample_sd<-sd(mns)
+print(paste("Sample Standard Deviation: ",round(Sample_sd,3)))
+# Theoretical 
+Theo_sd<-m1/sqrt(n)
+print(paste("Theoretical Standard Deviation: ", round(Theo_sd,3)))
+```
+### Variance
+```{r}
+# Sample
+Sample_var<-Sample_sd^2
+print(paste("Sample Variance: ",round(Sample_var,3)))
+# Theoretical
+Theo_var<-Theo_sd^2
+print(paste("Theoretical Variance: ",round(Theo_var,3)))
+```
+- The Standard deviation of the experimental sample is 0.755 which is close theoretical standard deviation of 0.791.
+- The variance of the sample is 0.571 while it's actual theoretical value is 0.625
+## 2. Proof of normal Distribution
+```{r}
+hist(mns,prob=T,xlab = "Sample Mean", main="Distribution of Sample mean and Comparison",col="red")
+xfit=seq(min(mns),max(mns),length=100)
+yfit=dnorm(xfit,mean=m1,sd=Theo_sd)
+lines(xfit, yfit,lwd=3,col="black")
+```
+
+```{r}
+qqnorm(mns)
+qqline(mns, col = 2)
+```
+The above plots proves that the experimental distribution is normally distributed.
